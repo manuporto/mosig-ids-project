@@ -4,11 +4,23 @@
 package overlay;
 
 public class App {
+
     public String getGreeting() {
-        return "Hello world.";
+        return "Baibai";
     }
 
     public static void main(String[] args) {
+        int mode = Integer.parseInt(args[0]);
+        try {
+            if (mode == 0) {
+                Send.run();
+            } else {
+                Recv.run();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.toString());
+        }
         System.out.println(new App().getGreeting());
     }
 }
