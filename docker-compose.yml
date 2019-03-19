@@ -1,0 +1,16 @@
+version: '3'
+services:
+  rabbitmq:
+    image: "rabbitmq:alpine"
+  node_1:
+    build: .
+    environment:
+      - MODE=0
+    depends_on:
+      - rabbitmq
+  node_2:
+    build: .
+    environment:
+      - MODE=1
+    depends_on:
+      - rabbitmq

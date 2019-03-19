@@ -9,8 +9,10 @@ public class Send {
     private final static String QUEUE_NAME = "hello";
 
     public static void run() throws Exception {
+        Thread.sleep(20000); // hack for waiting to rabbitmq server to be ready, only temporary
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("localhost");
+        factory.setHost("mosigidsproject_rabbitmq_1");
+        factory.setPort(5672);
         try (Connection connection = factory.newConnection();
              Channel channel = connection.createChannel()) {
             channel.queueDeclare(QUEUE_NAME, false, false, false, null);
