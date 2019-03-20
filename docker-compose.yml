@@ -1,7 +1,9 @@
 version: '3'
 services:
   rabbitmq:
-    image: "rabbitmq:alpine"
+    image: "rabbitmq:management-alpine"
+    ports:
+      - '15672:15672'
   node_1:
     build: .
     environment:
@@ -14,3 +16,4 @@ services:
       - MODE=1
     depends_on:
       - rabbitmq
+      - node_1
