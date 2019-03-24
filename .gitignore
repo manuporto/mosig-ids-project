@@ -21,3 +21,6 @@ gradle-app.setting
 
 # Ignore IntelliJ project folders
 .idea
+
+# VS Code
+.vscode
