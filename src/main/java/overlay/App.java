@@ -10,6 +10,7 @@ public class App {
     }
 
     public static void main(String[] args) {
+        ClientListener cl = new ClientListener();
         int mode = Integer.parseInt(args[0]);
         try {
             if (mode == 0) {
