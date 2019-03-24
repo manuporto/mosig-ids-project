@@ -11,5 +11,5 @@ public class Package {
         this.msg = msg;
     }
 
-    public getMsg();
+    public void getMsg() {}
 }

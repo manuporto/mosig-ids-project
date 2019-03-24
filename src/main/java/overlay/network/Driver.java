@@ -1,9 +1,6 @@
 package overlay.network;
 
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.Consumer;
+import com.rabbitmq.client.*;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -30,9 +27,9 @@ public class Driver {
         }
     }
 
-    public void addConnection(String connectionName, Consumer consumer) throws IOException {
+    public void addConnection(String connectionName, DeliverCallback deliverCallback) throws IOException {
         channel.queueBind(queueName, exchangeName, connectionName);
-        channel.basicConsume(queueName, true, consumer);
+        channel.basicConsume(queueName, true, deliverCallback, consumerTag -> {});
     }
 
     public void send(String destination, String message) throws IOException {
