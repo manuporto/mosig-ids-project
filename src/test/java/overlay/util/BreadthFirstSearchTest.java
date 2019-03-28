@@ -33,6 +33,7 @@ public class BreadthFirstSearchTest {
         List<Integer> expected = new ArrayList<>(2);
         expected.add(0);
         expected.add(1);
+        //expected.add(2);
         List<Integer> result = BreadthFirstSearch.getShortestDistance(adj, vertices, src, dest);
 
         assertEquals(expected, result);

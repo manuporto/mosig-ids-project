@@ -1,6 +1,7 @@
 package overlay.util;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class BreadthFirstSearch {
 
@@ -25,11 +26,21 @@ public class BreadthFirstSearch {
                     prediction.set(i, u);
                     queue.add(i);
                     if (i == dest) {
+                        // This may be incorrect
+                        prediction.add(i);
                         return prediction;
                     }
                 }
             }
         }
-        return prediction;
+        List<Integer> filteredPrediction = new ArrayList<>();
+        for (Integer i : prediction) {
+            System.out.println(i);
+            if (i != -1) {
+                System.out.println("Adding last element...");
+                filteredPrediction.add(i);
+            }
+        }
+        return filteredPrediction;
     }
 }
