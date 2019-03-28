@@ -4,6 +4,7 @@
 package overlay;
 
 import java.io.IOException;
+import java.util.concurrent.TimeoutException;
 
 public class App {
 
@@ -11,7 +12,11 @@ public class App {
         return "Baibai";
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, TimeoutException {
+        int physicalID = 0;
+        int[][] physicalTopology = { {0, 1}, {1, 0}};
+        String exchangeName = "defaultExchange";
+
         ClientListener cl = new ClientListener();
         cl.start();
     }
