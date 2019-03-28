@@ -28,19 +28,12 @@ public class BreadthFirstSearch {
                     if (i == dest) {
                         // This may be incorrect
                         prediction.add(i);
-                        return prediction;
+                        queue.clear();
+                        break;
                     }
                 }
             }
         }
-        List<Integer> filteredPrediction = new ArrayList<>();
-        for (Integer i : prediction) {
-            System.out.println(i);
-            if (i != -1) {
-                System.out.println("Adding last element...");
-                filteredPrediction.add(i);
-            }
-        }
-        return filteredPrediction;
+        return prediction.stream().filter(i -> i != -1).collect(Collectors.toList());
     }
 }
