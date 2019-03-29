@@ -1,4 +1,4 @@
-package overlay.network;
+package overlay.network.physical;
 
 import com.rabbitmq.client.DeliverCallback;
 
