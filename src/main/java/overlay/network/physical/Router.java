@@ -2,7 +2,9 @@ package overlay.network.physical;
 
 import com.rabbitmq.client.DeliverCallback;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeoutException;
 
@@ -14,9 +16,15 @@ public class Router {
     public Router(String host, int port, String exchangeName) throws IOException, TimeoutException {
         driver = new Driver(host, port, exchangeName);
         deliverCallback = (consumerTag, delivery) -> {
-            String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
-            System.out.println(" [x] Received '" +
-                delivery.getEnvelope().getRoutingKey() + "':'" + message + "'");
+            ByteArrayInputStream is = new ByteArrayInputStream(delivery.getBody());
+            try (ObjectInputStream ois = new ObjectInputStream(is)) {
+                Package pkg = (Package) ois.readObject();
+                System.out.println(" [x] Received '" +
+                        delivery.getEnvelope().getRoutingKey() + "':'" + pkg.getSrc() + "'");
+            } catch (ClassNotFoundException e) {
+                // TODO log error
+                e.printStackTrace();
+            }
         };
     }
 
@@ -24,8 +32,8 @@ public class Router {
         driver.addConnection(connectionName, deliverCallback);
     }
 
-    public void send(String destination, String message) throws IOException {
-        driver.send(destination, message);
+    public void send(Package aPackage) throws IOException {
+        driver.send(aPackage);
     }
 
 }

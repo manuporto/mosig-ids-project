@@ -2,7 +2,10 @@ package overlay.network.physical;
 
 import com.rabbitmq.client.*;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeoutException;
 
@@ -32,12 +35,17 @@ public class Driver {
         channel.basicConsume(queueName, true, deliverCallback, consumerTag -> {});
     }
 
-    public void send(String destination, String message) throws IOException {
+    public void send(Package aPackage) throws IOException {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(os);
+        objectOutputStream.writeObject(aPackage);
         channel.basicPublish(
                 exchangeName,
-                destination,
+                aPackage.getDest(), // TODO get actual destination
                 null,
-                message.getBytes(StandardCharsets.UTF_8));
+                os.toByteArray());
+                //message.getBytes(StandardCharsets.UTF_8));
+        objectOutputStream.close();
     }
 
 }
