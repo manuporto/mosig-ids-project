@@ -7,7 +7,8 @@ public class Message implements Serializable {
     private String dest;
     private String payload;
 
-    public Message(String dest, String payload) {
+    public Message(String src, String dest, String payload) {
+        this.src = src;
         this.dest = dest;
         this.payload = payload;
     }
