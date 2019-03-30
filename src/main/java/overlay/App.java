@@ -3,6 +3,8 @@
  */
 package overlay;
 
+import overlay.external.ClientListener;
+import overlay.external.ExternalMessage;
 import overlay.network.physical.Router;
 import overlay.network.virtual.Message;
 
@@ -12,13 +14,13 @@ import java.util.concurrent.TimeoutException;
 
 public class App {
 
-    private ConcurrentLinkedQueue<Message> messages;
+    private ConcurrentLinkedQueue<ExternalMessage> messages;
 
     public App() {
         messages = new ConcurrentLinkedQueue<>();
     }
 
-    public ConcurrentLinkedQueue<Message> getMessages() {
+    private ConcurrentLinkedQueue<ExternalMessage> getMessages() {
         return messages;
     }
 

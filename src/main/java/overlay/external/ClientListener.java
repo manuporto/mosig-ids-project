@@ -1,18 +1,15 @@
-package overlay;
+package overlay.external;
 import com.sun.net.httpserver.HttpServer;
-import overlay.network.virtual.Message;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.TimeoutException;
 
 public class ClientListener {
 
     private HttpServer server;
-    private ConcurrentLinkedQueue<Message> messages;
 
-    public ClientListener(ConcurrentLinkedQueue<Message> messages) throws IOException, TimeoutException {
+    public ClientListener(ConcurrentLinkedQueue<ExternalMessage> messages) throws IOException {
         server = HttpServer.create(new InetSocketAddress(8000), 0);
         server.createContext("/sendmsg", new SendMessageHandler(messages));
         server.setExecutor(null); // creates a default executor
