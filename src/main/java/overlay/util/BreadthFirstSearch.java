@@ -44,4 +44,17 @@ public class BreadthFirstSearch {
 
         return path;
     }
+
+    public static Map<Integer, Integer> calculateNextHops(int src, int[][] adj, int vertices) {
+        Map<Integer, Integer> hops = new HashMap<>();
+        int nextHop;
+        for (int dest = 0; dest < vertices; dest++) {
+            if ( dest != src) {
+                nextHop = BreadthFirstSearch.getShortestDistance(adj, vertices, src, dest).get(1);
+                hops.put(dest, nextHop);
+            }
+        }
+
+        return hops;
+    }
 }
