@@ -18,7 +18,8 @@ public class VirtualRouter implements Runnable {
     private void listenForExternalMessages() {
         while(!Thread.interrupted()) {
             ExternalMessage externalMessage = externalMessages.remove();
-            Message newMessage = new Message("-1", externalMessage.getDest(), externalMessage.getMessage());
+            // TODO get correct ids
+            Message newMessage = new Message(-1, externalMessage.getDest(), -1, externalMessage.getMessage());
             outgoingMessages.add(newMessage);
         }
     }
@@ -26,7 +27,7 @@ public class VirtualRouter implements Runnable {
     private void listenForIncomingMessages() {
         while (!Thread.interrupted()) {
             Message incomingMessage = incomingMessages.remove();
-            if (incomingMessage.getDest().equals("MYDEST")) {
+            if (incomingMessage.getDest() == -1) { // TODO get my node id
                 // TODO send to messagePrinter class
                 System.out.println(incomingMessage.toString());
             } else {

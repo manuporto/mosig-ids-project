@@ -1,15 +1,15 @@
 package overlay.external;
 
 public class ExternalMessage {
-    private String dest;
+    private int dest;
     private String message;
 
-    public ExternalMessage(String dest, String message) {
+    public ExternalMessage(int dest, String message) {
         this.dest = dest;
         this.message = message;
     }
 
-    public String getDest() {
+    public int getDest() {
         return dest;
     }
 

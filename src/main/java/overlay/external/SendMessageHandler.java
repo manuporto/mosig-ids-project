@@ -27,7 +27,8 @@ public class SendMessageHandler implements HttpHandler {
 
         for (Map.Entry<String, String> entry : jsonMap.entrySet()) {
             System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
-            ExternalMessage message = new ExternalMessage(entry.getKey(), entry.getValue());
+            // TODO return http error message if it's not possible to parse int
+            ExternalMessage message = new ExternalMessage(Integer.parseInt(entry.getKey()), entry.getValue());
             messages.add(message);
         }
         is.close();
