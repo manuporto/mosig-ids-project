@@ -45,14 +45,8 @@ public class Router {
         }
     }
 
-    public void connect(String connectionName) throws IOException {
-        driver.addConnection(connectionName, deliverCallback);
+    public void connect(int dest) throws IOException {
+        driver.addIncomingConnection(dest, deliverCallback);
+        driver.addOutgoingConnection(dest);
     }
-
-    public void send(Package aPackage) throws IOException {
-        // TODO send physical next hop info to the driver
-        // driver.send(aPackage, nextHopsForDestinations.get(aPackage.getDest()));
-        driver.send(aPackage);
-    }
-
 }
