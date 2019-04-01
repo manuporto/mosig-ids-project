@@ -29,7 +29,7 @@ public class Driver {
             queueName = this.channel.queueDeclare().getQueue();
         }
     }
-
+    
     public void addConnection(String connectionName, DeliverCallback deliverCallback) throws IOException {
         channel.queueBind(queueName, exchangeName, connectionName);
         channel.basicConsume(queueName, true, deliverCallback, consumerTag -> {});
@@ -41,10 +41,9 @@ public class Driver {
         objectOutputStream.writeObject(aPackage);
         channel.basicPublish(
                 exchangeName,
-                aPackage.getDest(), // TODO get actual destination
+                "nexthopdest", // TODO get actual destination
                 null,
                 os.toByteArray());
-                //message.getBytes(StandardCharsets.UTF_8));
         objectOutputStream.close();
     }
 

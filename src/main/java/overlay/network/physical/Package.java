@@ -5,25 +5,35 @@ import overlay.network.virtual.Message;
 import java.io.Serializable;
 
 public class Package implements Serializable {
-    String src;
-    String dest;
+    int src;
+    int dest;
+    int nextHop;
     Message message;
 
-    public Package(String src, String dest, Message message) {
+    public Package(int src, int dest, int nextHop, Message message) {
         this.src = src;
         this.dest = dest;
+        this.nextHop = nextHop;
         this.message = message;
     }
 
-    public String getSrc() {
+    public int getSrc() {
         return src;
     }
 
-    public String getDest() {
+    public int getDest() {
         return dest;
+    }
+
+    public int getNextHop() {
+        return nextHop;
     }
 
     public Message getMessage() {
         return message;
+    }
+
+    public void setNextHop(int newNextHop) {
+        nextHop = newNextHop;
     }
 }
