@@ -5,11 +5,16 @@ package overlay;
 
 import overlay.external.ClientListener;
 import overlay.external.ExternalMessage;
+import overlay.network.NetworkInfo;
 import overlay.network.physical.Router;
 import overlay.network.virtual.Message;
 import overlay.network.virtual.VirtualRouter;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeoutException;
 
@@ -30,7 +35,13 @@ public class App {
         int port = 5672;
         String exchangeName = "defaultExchange";
         int physicalID = 0;
-        int[][] physicalTopology = { {0, 1}, {1, 0}};
+        Map<Integer, Integer> tagTranslations = new HashMap<>();
+        tagTranslations.put(0, 0);
+        tagTranslations.put(1, 1);
+        List<List<Integer>> pTopo = Arrays.asList(Arrays.asList(0, 1), Arrays.asList(1, 0));
+        List<List<Integer>> vTopo = Arrays.asList(Arrays.asList(0, 1), Arrays.asList(1, 0));
+
+        NetworkInfo netInfo = new NetworkInfo(host, port, exchangeName, physicalID, tagTranslations, pTopo, vTopo);
 
         Router router = new Router(host, port, exchangeName, app.incomingMessages, app.outgoingMessages);
         VirtualRouter vRouter = new VirtualRouter(app.externalMessages, app.incomingMessages, app.outgoingMessages);
