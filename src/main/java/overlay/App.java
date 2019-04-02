@@ -7,21 +7,21 @@ import overlay.external.ClientListener;
 import overlay.external.ExternalMessage;
 import overlay.network.physical.Router;
 import overlay.network.virtual.Message;
+import overlay.network.virtual.VirtualRouter;
 
 import java.io.IOException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeoutException;
 
 public class App {
-
-    private ConcurrentLinkedQueue<ExternalMessage> messages;
+    private ConcurrentLinkedQueue<ExternalMessage> externalMessages;
+    private ConcurrentLinkedQueue<Message> incomingMessages;
+    private ConcurrentLinkedQueue<Message> outgoingMessages;
 
     public App() {
-        messages = new ConcurrentLinkedQueue<>();
-    }
-
-    private ConcurrentLinkedQueue<ExternalMessage> getMessages() {
-        return messages;
+        externalMessages = new ConcurrentLinkedQueue<>();
+        incomingMessages = new ConcurrentLinkedQueue<>();
+        outgoingMessages = new ConcurrentLinkedQueue<>();
     }
 
     public String getGreeting() {
@@ -36,8 +36,9 @@ public class App {
         int physicalID = 0;
         int[][] physicalTopology = { {0, 1}, {1, 0}};
 
-        Router router = new Router(host, port, exchangeName);
-        ClientListener cl = new ClientListener(app.getMessages());
+        Router router = new Router(host, port, exchangeName, app.incomingMessages, app.outgoingMessages);
+        VirtualRouter vRouter = new VirtualRouter(app.externalMessages, app.incomingMessages, app.outgoingMessages);
+        ClientListener cl = new ClientListener(app.externalMessages);
         cl.start();
     }
 }

@@ -36,7 +36,7 @@ public class VirtualRouter implements Runnable {
     private void listenForIncomingMessages() {
         while (!Thread.currentThread().isInterrupted()) {
             Message incomingMessage = incomingMessages.remove();
-            if (incomingMessage.getDest() == myID) { // TODO get my node id
+            if (incomingMessage.getDest() == myID) {
                 // TODO send to messagePrinter class
                 System.out.println(incomingMessage.toString());
             } else {
