@@ -3,21 +3,41 @@
  */
 package overlay;
 
+import overlay.external.ClientListener;
+import overlay.external.ExternalMessage;
+import overlay.network.physical.Router;
+import overlay.network.virtual.Message;
+
 import java.io.IOException;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeoutException;
 
 public class App {
+
+    private ConcurrentLinkedQueue<ExternalMessage> messages;
+
+    public App() {
+        messages = new ConcurrentLinkedQueue<>();
+    }
+
+    private ConcurrentLinkedQueue<ExternalMessage> getMessages() {
+        return messages;
+    }
 
     public String getGreeting() {
         return "Baibai";
     }
 
     public static void main(String[] args) throws IOException, TimeoutException {
+        App app = new App();
+        String host = "localhost";
+        int port = 5672;
+        String exchangeName = "defaultExchange";
         int physicalID = 0;
         int[][] physicalTopology = { {0, 1}, {1, 0}};
-        String exchangeName = "defaultExchange";
 
-        ClientListener cl = new ClientListener();
+        Router router = new Router(host, port, exchangeName);
+        ClientListener cl = new ClientListener(app.getMessages());
         cl.start();
     }
 }
