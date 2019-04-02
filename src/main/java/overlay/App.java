@@ -18,14 +18,10 @@ public class App {
     private ConcurrentLinkedQueue<Message> incomingMessages;
     private ConcurrentLinkedQueue<Message> outgoingMessages;
 
-    public App() {
+    private App() {
         externalMessages = new ConcurrentLinkedQueue<>();
         incomingMessages = new ConcurrentLinkedQueue<>();
         outgoingMessages = new ConcurrentLinkedQueue<>();
-    }
-
-    public String getGreeting() {
-        return "Baibai";
     }
 
     public static void main(String[] args) throws IOException, TimeoutException {
