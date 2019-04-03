@@ -25,10 +25,7 @@ public class Router {
                   ConcurrentLinkedQueue<Message> outgoingMessages) throws IOException, TimeoutException {
         this.networkInfo = networkInfo;
         myID = networkInfo.getPhysicalID();
-        // TODO use real info
-        int[][] adj = {{}};
-        int vertices = 0;
-        nextHopsForDestinations = BreadthFirstSearch.calculateNextHops(myID, adj, vertices);
+        nextHopsForDestinations = BreadthFirstSearch.calculateNextHops(myID, networkInfo.getpTopology());
 
         this.incomingMessages = incomingMessages;
         this.outgoingMessages = outgoingMessages;

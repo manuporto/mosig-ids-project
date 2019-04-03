@@ -20,8 +20,7 @@ public class VirtualRouter implements Runnable {
                          ConcurrentLinkedQueue<Message> outgoingMessages) {
         this.networkInfo = networkInfo;
         this.myID = networkInfo.getVirtualID();
-        int[][] adj = {{}}; // TODO get actual matrix info from somewhere
-        this.nextHopsForDestinations = BreadthFirstSearch.calculateNextHops(myID, adj, 0);
+        this.nextHopsForDestinations = BreadthFirstSearch.calculateNextHops(myID, networkInfo.getvTopology());
         this.externalMessages = externalMessages;
         this.incomingMessages = incomingMessages;
         this.outgoingMessages = outgoingMessages;
