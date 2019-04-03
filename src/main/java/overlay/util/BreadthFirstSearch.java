@@ -4,12 +4,12 @@ import java.util.*;
 
 public class BreadthFirstSearch {
 
-    static List<Integer> getShortestDistance(List<List<Integer>> adj, int vertices, int src, int dest) {
-        List<Integer> predecessors = new ArrayList<>(vertices);
+    static List<Integer> getShortestDistance(List<List<Integer>> adj, int src, int dest) {
+        List<Integer> predecessors = new ArrayList<>(adj.size());
         Queue<Integer> queue = new LinkedList<>();
-        List<Boolean> visited = new ArrayList<>(vertices);
+        List<Boolean> visited = new ArrayList<>(adj.size());
 
-        for (int i = 0; i < vertices; i++) {
+        for (int i = 0; i < adj.size(); i++) {
             visited.add(false);
             predecessors.add(-1);
         }
@@ -19,7 +19,7 @@ public class BreadthFirstSearch {
 
         while (!queue.isEmpty()) {
             int u = queue.remove();
-            for (int i = 0; i < vertices; i++) {
+            for (int i = 0; i < adj.size(); i++) {
                 if (adj.get(u).get(i) == 1 && !visited.get(i)) {
                     visited.set(i, true);
                     predecessors.set(i, u);
@@ -44,12 +44,12 @@ public class BreadthFirstSearch {
         return path;
     }
 
-    public static Map<Integer, Integer> calculateNextHops(int src, List<List<Integer>> adj, int vertices) {
+    public static Map<Integer, Integer> calculateNextHops(int src, List<List<Integer>> adj) {
         Map<Integer, Integer> hops = new HashMap<>();
         int nextHop;
-        for (int dest = 0; dest < vertices; dest++) {
+        for (int dest = 0; dest < adj.size(); dest++) {
             if ( dest != src) {
-                nextHop = BreadthFirstSearch.getShortestDistance(adj, vertices, src, dest).get(1);
+                nextHop = BreadthFirstSearch.getShortestDistance(adj, src, dest).get(1);
                 hops.put(dest, nextHop);
             }
         }

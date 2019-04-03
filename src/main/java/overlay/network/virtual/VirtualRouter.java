@@ -4,8 +4,6 @@ import overlay.external.ExternalMessage;
 import overlay.network.NetworkInfo;
 import overlay.util.BreadthFirstSearch;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -22,8 +20,7 @@ public class VirtualRouter implements Runnable {
                          ConcurrentLinkedQueue<Message> outgoingMessages) {
         this.networkInfo = networkInfo;
         this.myID = networkInfo.getVirtualID();
-        List<List<Integer>> adj = new ArrayList<>(new ArrayList<>()); // TODO get actual matrix info from somewhere
-        this.nextHopsForDestinations = BreadthFirstSearch.calculateNextHops(myID, adj, 0);
+        this.nextHopsForDestinations = BreadthFirstSearch.calculateNextHops(myID, networkInfo.getvTopology());
         this.externalMessages = externalMessages;
         this.incomingMessages = incomingMessages;
         this.outgoingMessages = outgoingMessages;

@@ -8,8 +8,6 @@ import overlay.util.BreadthFirstSearch;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeoutException;
@@ -27,10 +25,7 @@ public class Router {
                   ConcurrentLinkedQueue<Message> outgoingMessages) throws IOException, TimeoutException {
         this.networkInfo = networkInfo;
         myID = networkInfo.getPhysicalID();
-        // TODO use real info
-        List<List<Integer>> adj = new ArrayList<>(new ArrayList<>());
-        int vertices = 0;
-        nextHopsForDestinations = BreadthFirstSearch.calculateNextHops(myID, adj, vertices);
+        nextHopsForDestinations = BreadthFirstSearch.calculateNextHops(myID, networkInfo.getpTopology());
 
         this.incomingMessages = incomingMessages;
         this.outgoingMessages = outgoingMessages;
