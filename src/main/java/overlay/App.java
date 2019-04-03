@@ -5,39 +5,55 @@ package overlay;
 
 import overlay.external.ClientListener;
 import overlay.external.ExternalMessage;
+import overlay.network.NetworkInfo;
 import overlay.network.physical.Router;
 import overlay.network.virtual.Message;
+import overlay.network.virtual.VirtualRouter;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeoutException;
 
 public class App {
+    private ConcurrentLinkedQueue<ExternalMessage> externalMessages;
+    private ConcurrentLinkedQueue<Message> incomingMessages;
+    private ConcurrentLinkedQueue<Message> outgoingMessages;
 
-    private ConcurrentLinkedQueue<ExternalMessage> messages;
-
-    public App() {
-        messages = new ConcurrentLinkedQueue<>();
-    }
-
-    private ConcurrentLinkedQueue<ExternalMessage> getMessages() {
-        return messages;
-    }
-
-    public String getGreeting() {
-        return "Baibai";
+    private App() {
+        externalMessages = new ConcurrentLinkedQueue<>();
+        incomingMessages = new ConcurrentLinkedQueue<>();
+        outgoingMessages = new ConcurrentLinkedQueue<>();
     }
 
     public static void main(String[] args) throws IOException, TimeoutException {
+        int virtualID = -1;
+        if (args.length == 1) {
+            virtualID = Integer.parseInt(args[0]);
+        }
+        if (virtualID < 0) {
+            System.err.println("Incorrect number or value of arguments.");
+            System.err.println("Usage: java App <nodeID>");
+        }
+
         App app = new App();
         String host = "localhost";
         int port = 5672;
         String exchangeName = "defaultExchange";
-        int physicalID = 0;
-        int[][] physicalTopology = { {0, 1}, {1, 0}};
+        Map<Integer, Integer> tagTranslations = new HashMap<>();
+        tagTranslations.put(0, 0);
+        tagTranslations.put(1, 1);
+        List<List<Integer>> pTopo = Arrays.asList(Arrays.asList(0, 1), Arrays.asList(1, 0));
+        List<List<Integer>> vTopo = Arrays.asList(Arrays.asList(0, 1), Arrays.asList(1, 0));
 
-        Router router = new Router(host, port, exchangeName);
-        ClientListener cl = new ClientListener(app.getMessages());
+        NetworkInfo netInfo = new NetworkInfo(host, port, exchangeName, virtualID, tagTranslations, pTopo, vTopo);
+
+        Router router = new Router(netInfo, app.incomingMessages, app.outgoingMessages);
+        VirtualRouter vRouter = new VirtualRouter(netInfo, app.externalMessages, app.incomingMessages, app.outgoingMessages);
+        ClientListener cl = new ClientListener(app.externalMessages);
         cl.start();
     }
 }

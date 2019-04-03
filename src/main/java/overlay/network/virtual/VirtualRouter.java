@@ -1,22 +1,25 @@
 package overlay.network.virtual;
 
 import overlay.external.ExternalMessage;
+import overlay.network.NetworkInfo;
 import overlay.util.BreadthFirstSearch;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class VirtualRouter implements Runnable {
+    private NetworkInfo networkInfo;
     private final int myID;
     private Map<Integer, Integer> nextHopsForDestinations;
     private ConcurrentLinkedQueue<ExternalMessage> externalMessages;
     private ConcurrentLinkedQueue<Message> incomingMessages;
     private ConcurrentLinkedQueue<Message> outgoingMessages;
 
-    public VirtualRouter(ConcurrentLinkedQueue<ExternalMessage> externalMessages,
+    public VirtualRouter(NetworkInfo networkInfo, ConcurrentLinkedQueue<ExternalMessage> externalMessages,
                          ConcurrentLinkedQueue<Message> incomingMessages,
                          ConcurrentLinkedQueue<Message> outgoingMessages) {
-        this.myID = -1;
+        this.networkInfo = networkInfo;
+        this.myID = networkInfo.getVirtualID();
         int[][] adj = {{}}; // TODO get actual matrix info from somewhere
         this.nextHopsForDestinations = BreadthFirstSearch.calculateNextHops(myID, adj, 0);
         this.externalMessages = externalMessages;
@@ -36,7 +39,7 @@ public class VirtualRouter implements Runnable {
     private void listenForIncomingMessages() {
         while (!Thread.currentThread().isInterrupted()) {
             Message incomingMessage = incomingMessages.remove();
-            if (incomingMessage.getDest() == myID) { // TODO get my node id
+            if (incomingMessage.getDest() == myID) {
                 // TODO send to messagePrinter class
                 System.out.println(incomingMessage.toString());
             } else {
