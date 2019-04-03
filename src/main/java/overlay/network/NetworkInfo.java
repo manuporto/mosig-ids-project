@@ -7,18 +7,18 @@ public class NetworkInfo {
     private String host;
     private int port;
     private String exchangeName;
-    private int physicalID;
+    private int virtualID;
     private Map<Integer, Integer> tagTranslations;
     private List<List<Integer>> pTopology;
     private List<List<Integer>> vTopology;
 
-    public NetworkInfo(String host, int port, String exchangeName, int physicalID,
+    public NetworkInfo(String host, int port, String exchangeName, int virtualID,
                        Map<Integer, Integer> tagTranslations, List<List<Integer>> pTopology,
                        List<List<Integer>> vTopology) {
         this.host = host;
         this.port = port;
         this.exchangeName = exchangeName;
-        this.physicalID = physicalID;
+        this.virtualID = virtualID;
         this.tagTranslations = tagTranslations;
         this.pTopology = pTopology;
         this.vTopology = vTopology;
@@ -36,8 +36,16 @@ public class NetworkInfo {
         return exchangeName;
     }
 
+    public int getVirtualID() {
+        return virtualID;
+    }
+
     public int getPhysicalID() {
-        return physicalID;
+        return tagTranslations.get(virtualID);
+    }
+
+    public int translateToPhysical(int id) {
+        return tagTranslations.get(id);
     }
 
     public Map<Integer, Integer> getTagTranslations() {

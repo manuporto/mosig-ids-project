@@ -1,32 +1,31 @@
 package overlay.network.physical;
 
 import com.rabbitmq.client.DeliverCallback;
+import overlay.network.NetworkInfo;
 import overlay.network.virtual.Message;
 import overlay.util.BreadthFirstSearch;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeoutException;
 
 public class Router {
+    private NetworkInfo networkInfo;
     private final int myID;
-    private Map<Integer, Integer> tagTranslations;
     private Map<Integer, Integer> nextHopsForDestinations;
     private ConcurrentLinkedQueue<Message> incomingMessages;
     private ConcurrentLinkedQueue<Message> outgoingMessages;
     private Driver driver;
     private DeliverCallback deliverCallback;
 
-    public Router(String host, int port, String exchangeName,
-                  ConcurrentLinkedQueue<Message> incomingMessages,
+    public Router(NetworkInfo networkInfo, ConcurrentLinkedQueue<Message> incomingMessages,
                   ConcurrentLinkedQueue<Message> outgoingMessages) throws IOException, TimeoutException {
+        this.networkInfo = networkInfo;
+        myID = networkInfo.getPhysicalID();
         // TODO use real info
-        myID = -1;
-        tagTranslations = new HashMap<>();
         int[][] adj = {{}};
         int vertices = 0;
         nextHopsForDestinations = BreadthFirstSearch.calculateNextHops(myID, adj, vertices);
@@ -34,7 +33,7 @@ public class Router {
         this.incomingMessages = incomingMessages;
         this.outgoingMessages = outgoingMessages;
 
-        driver = new Driver(host, port, exchangeName);
+        driver = new Driver(networkInfo.getHost(), networkInfo.getPort(), networkInfo.getExchangeName());
         deliverCallback = (consumerTag, delivery) -> {
             ByteArrayInputStream is = new ByteArrayInputStream(delivery.getBody());
             try (ObjectInputStream ois = new ObjectInputStream(is)) {
@@ -45,7 +44,7 @@ public class Router {
                     pkg.setNextHop(nextHopsForDestinations.get(pkg.getDest()));
                     driver.send(pkg);
                 } else {
-                    incomingMessages.add(pkg.getMessage());
+                    this.incomingMessages.add(pkg.getMessage());
                 }
             } catch (ClassNotFoundException e) {
                 // TODO log error
@@ -57,8 +56,8 @@ public class Router {
     private void processMessages() {
         while (!Thread.interrupted()) {
             Message msg = outgoingMessages.remove();
-            int pSrc = tagTranslations.get(msg.getSrc());
-            int pDest = tagTranslations.get(msg.getNextHop());
+            int pSrc = networkInfo.translateToPhysical(msg.getSrc());
+            int pDest = networkInfo.translateToPhysical(msg.getNextHop());
             int nextHop = nextHopsForDestinations.get(pDest);
             Package pkg = new Package(pSrc, pDest, nextHop, msg);
             try {

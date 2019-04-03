@@ -30,21 +30,29 @@ public class App {
     }
 
     public static void main(String[] args) throws IOException, TimeoutException {
+        int virtualID = -1;
+        if (args.length == 1) {
+            virtualID = Integer.parseInt(args[0]);
+        }
+        if (virtualID < 0) {
+            System.err.println("Incorrect number or value of arguments.");
+            System.err.println("Usage: java App <nodeID>");
+        }
+
         App app = new App();
         String host = "localhost";
         int port = 5672;
         String exchangeName = "defaultExchange";
-        int physicalID = 0;
         Map<Integer, Integer> tagTranslations = new HashMap<>();
         tagTranslations.put(0, 0);
         tagTranslations.put(1, 1);
         List<List<Integer>> pTopo = Arrays.asList(Arrays.asList(0, 1), Arrays.asList(1, 0));
         List<List<Integer>> vTopo = Arrays.asList(Arrays.asList(0, 1), Arrays.asList(1, 0));
 
-        NetworkInfo netInfo = new NetworkInfo(host, port, exchangeName, physicalID, tagTranslations, pTopo, vTopo);
+        NetworkInfo netInfo = new NetworkInfo(host, port, exchangeName, virtualID, tagTranslations, pTopo, vTopo);
 
-        Router router = new Router(host, port, exchangeName, app.incomingMessages, app.outgoingMessages);
-        VirtualRouter vRouter = new VirtualRouter(app.externalMessages, app.incomingMessages, app.outgoingMessages);
+        Router router = new Router(netInfo, app.incomingMessages, app.outgoingMessages);
+        VirtualRouter vRouter = new VirtualRouter(netInfo, app.externalMessages, app.incomingMessages, app.outgoingMessages);
         ClientListener cl = new ClientListener(app.externalMessages);
         cl.start();
     }
