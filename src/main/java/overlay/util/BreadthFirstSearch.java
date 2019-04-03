@@ -1,11 +1,10 @@
 package overlay.util;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class BreadthFirstSearch {
 
-    public static List<Integer> getShortestDistance(int[][] adj, int vertices, int src, int dest) {
+    static List<Integer> getShortestDistance(List<List<Integer>> adj, int vertices, int src, int dest) {
         List<Integer> predecessors = new ArrayList<>(vertices);
         Queue<Integer> queue = new LinkedList<>();
         List<Boolean> visited = new ArrayList<>(vertices);
@@ -21,7 +20,7 @@ public class BreadthFirstSearch {
         while (!queue.isEmpty()) {
             int u = queue.remove();
             for (int i = 0; i < vertices; i++) {
-                if (adj[u][i] == 1 && !visited.get(i)) {
+                if (adj.get(u).get(i) == 1 && !visited.get(i)) {
                     visited.set(i, true);
                     predecessors.set(i, u);
                     queue.add(i);
@@ -45,7 +44,7 @@ public class BreadthFirstSearch {
         return path;
     }
 
-    public static Map<Integer, Integer> calculateNextHops(int src, int[][] adj, int vertices) {
+    public static Map<Integer, Integer> calculateNextHops(int src, List<List<Integer>> adj, int vertices) {
         Map<Integer, Integer> hops = new HashMap<>();
         int nextHop;
         for (int dest = 0; dest < vertices; dest++) {

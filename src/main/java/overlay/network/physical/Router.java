@@ -8,6 +8,8 @@ import overlay.util.BreadthFirstSearch;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeoutException;
@@ -26,7 +28,7 @@ public class Router {
         this.networkInfo = networkInfo;
         myID = networkInfo.getPhysicalID();
         // TODO use real info
-        int[][] adj = {{}};
+        List<List<Integer>> adj = new ArrayList<>(new ArrayList<>());
         int vertices = 0;
         nextHopsForDestinations = BreadthFirstSearch.calculateNextHops(myID, adj, vertices);
 
