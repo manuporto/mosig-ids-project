@@ -5,19 +5,19 @@ import overlay.network.NetworkInfo;
 import overlay.util.BreadthFirstSearch;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.BlockingQueue;
 
 public class VirtualRouter implements Runnable {
     private NetworkInfo networkInfo;
     private final int myID;
     private Map<Integer, Integer> nextHopsForDestinations;
-    private ConcurrentLinkedQueue<ExternalMessage> externalMessages;
-    private ConcurrentLinkedQueue<Message> incomingMessages;
-    private ConcurrentLinkedQueue<Message> outgoingMessages;
+    private BlockingQueue<ExternalMessage> externalMessages;
+    private BlockingQueue<Message> incomingMessages;
+    private BlockingQueue<Message> outgoingMessages;
 
-    public VirtualRouter(NetworkInfo networkInfo, ConcurrentLinkedQueue<ExternalMessage> externalMessages,
-                         ConcurrentLinkedQueue<Message> incomingMessages,
-                         ConcurrentLinkedQueue<Message> outgoingMessages) {
+    public VirtualRouter(NetworkInfo networkInfo, BlockingQueue<ExternalMessage> externalMessages,
+                         BlockingQueue<Message> incomingMessages,
+                         BlockingQueue<Message> outgoingMessages) {
         this.networkInfo = networkInfo;
         this.myID = networkInfo.getVirtualID();
         this.nextHopsForDestinations = BreadthFirstSearch.calculateNextHops(myID, networkInfo.getvTopology());
@@ -28,24 +28,36 @@ public class VirtualRouter implements Runnable {
 
     private void listenForExternalMessages() {
         while(!Thread.currentThread().isInterrupted()) {
-            ExternalMessage externalMessage = externalMessages.remove();
-            int dest = externalMessage.getDest();
-            Message newMessage = new Message(myID, dest, nextHopsForDestinations.get(dest), externalMessage.getMessage());
-            outgoingMessages.add(newMessage);
+            ExternalMessage externalMessage;
+            try {
+                externalMessage = externalMessages.take();
+                int dest = externalMessage.getDest();
+                Message newMessage = new Message(myID, dest, nextHopsForDestinations.get(dest), externalMessage.getMessage());
+                outgoingMessages.put(newMessage);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                e.printStackTrace();
+            }
         }
     }
 
     private void listenForIncomingMessages() {
         while (!Thread.currentThread().isInterrupted()) {
-            Message incomingMessage = incomingMessages.remove();
-            if (incomingMessage.getDest() == myID) {
-                // TODO send to messagePrinter class
-                System.out.println(incomingMessage.toString());
-            } else {
-                int nextHop = nextHopsForDestinations.get(incomingMessage.getDest());
-                incomingMessage.setNextHop(nextHop);
-                outgoingMessages.add(incomingMessage);
+            try {
+                Message incomingMessage = incomingMessages.take();
+                if (incomingMessage.getDest() == myID) {
+                    // TODO send to messagePrinter class
+                    System.out.println(incomingMessage.toString());
+                } else {
+                    int nextHop = nextHopsForDestinations.get(incomingMessage.getDest());
+                    incomingMessage.setNextHop(nextHop);
+                    outgoingMessages.put(incomingMessage);
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                e.printStackTrace();
             }
+
         }
     }
 

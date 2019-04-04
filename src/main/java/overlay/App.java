@@ -11,25 +11,23 @@ import overlay.network.virtual.Message;
 import overlay.network.virtual.VirtualRouter;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeoutException;
 
 public class App {
-    private ConcurrentLinkedQueue<ExternalMessage> externalMessages;
-    private ConcurrentLinkedQueue<Message> incomingMessages;
-    private ConcurrentLinkedQueue<Message> outgoingMessages;
+    private BlockingQueue<ExternalMessage> externalMessages;
+    private BlockingQueue<Message> incomingMessages;
+    private BlockingQueue<Message> outgoingMessages;
 
     private App() {
-        externalMessages = new ConcurrentLinkedQueue<>();
-        incomingMessages = new ConcurrentLinkedQueue<>();
-        outgoingMessages = new ConcurrentLinkedQueue<>();
+        externalMessages = new LinkedBlockingQueue<>();
+        incomingMessages = new LinkedBlockingQueue<>();
+        outgoingMessages = new LinkedBlockingQueue<>();
     }
 
-    public static void main(String[] args) throws IOException, TimeoutException {
+    public static void main(String[] args) throws IOException, TimeoutException, InterruptedException {
         int virtualID = -1;
         if (args.length == 1) {
             virtualID = Integer.parseInt(args[0]);
@@ -37,8 +35,9 @@ public class App {
         if (virtualID < 0) {
             System.err.println("Incorrect number or value of arguments.");
             System.err.println("Usage: java App <nodeID>");
+            return;
         }
-
+        System.out.println("Running with ID: " + virtualID);
         App app = new App();
         String host = "localhost";
         int port = 5672;
@@ -55,5 +54,25 @@ public class App {
         VirtualRouter vRouter = new VirtualRouter(netInfo, app.externalMessages, app.incomingMessages, app.outgoingMessages);
         ClientListener cl = new ClientListener(app.externalMessages);
         cl.start();
+        Thread routerThread = new Thread(router);
+        routerThread.start();
+        Thread virtualRouterThread = new Thread(vRouter);
+        virtualRouterThread.start();
+
+        Scanner in = new Scanner(System.in);
+        System.out.println("Enter Q for stopping the node.");
+        String quit = in.nextLine();
+
+        while (!quit.equalsIgnoreCase("q")) {
+            System.out.println("Enter Q for stopping the node.");
+            quit = in.nextLine();
+        }
+
+        cl.stop();
+        routerThread.interrupt();
+        virtualRouterThread.interrupt();
+        routerThread.join();
+        virtualRouterThread.join();
+
     }
 }
