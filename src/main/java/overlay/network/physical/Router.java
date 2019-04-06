@@ -31,7 +31,7 @@ public class Router implements Runnable {
         this.incomingMessages = incomingMessages;
         this.outgoingMessages = outgoingMessages;
 
-        driver = new Driver(networkInfo.getHost(), networkInfo.getPort(), networkInfo.getExchangeName());
+        driver = new Driver(networkInfo.getHost(), networkInfo.getPort(), networkInfo.getExchangeName(), myID);
         deliverCallback = (consumerTag, delivery) -> {
             ByteArrayInputStream is = new ByteArrayInputStream(delivery.getBody());
             try (ObjectInputStream ois = new ObjectInputStream(is)) {
