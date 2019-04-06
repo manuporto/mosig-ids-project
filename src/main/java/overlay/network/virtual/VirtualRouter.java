@@ -37,6 +37,7 @@ public class VirtualRouter implements Runnable {
                 int dest = externalMessage.getDest();
                 Message newMessage = new Message(myID, dest, nextHopsForDestinations.get(dest), externalMessage.getMessage());
                 outgoingMessages.put(newMessage);
+                logger.debug("Sent external message: " + newMessage.toString());
             } catch (InterruptedException e) {
                 logger.trace("VirtualRouter got interrupted when trying to get a message from the externalMessages queue.");
                 Thread.currentThread().interrupt();
@@ -54,6 +55,7 @@ public class VirtualRouter implements Runnable {
                     int nextHop = nextHopsForDestinations.get(incomingMessage.getDest());
                     incomingMessage.setNextHop(nextHop);
                     outgoingMessages.put(incomingMessage);
+                    logger.debug("Received and rerouted following message: " + incomingMessage.toString());
                 }
             } catch (InterruptedException e) {
                 logger.trace("VirtualRouter got interrupted when trying to get a message from the incomingMessages queue.");

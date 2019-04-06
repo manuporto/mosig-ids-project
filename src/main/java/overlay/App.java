@@ -49,8 +49,32 @@ public class App {
         Map<Integer, Integer> tagTranslations = new HashMap<>();
         tagTranslations.put(0, 0);
         tagTranslations.put(1, 1);
-        List<List<Integer>> pTopo = Arrays.asList(Arrays.asList(0, 1), Arrays.asList(1, 0));
-        List<List<Integer>> vTopo = Arrays.asList(Arrays.asList(0, 1), Arrays.asList(1, 0));
+        tagTranslations.put(2, 2);
+        tagTranslations.put(3, 3);
+        tagTranslations.put(4, 4);
+        tagTranslations.put(5, 5);
+        tagTranslations.put(6, 6);
+        tagTranslations.put(7, 7);
+        List<List<Integer>> pTopo = Arrays.asList(
+                Arrays.asList(0, 1, 0, 1, 0, 0, 0, 0),
+                Arrays.asList(1, 0, 1, 0, 0, 0, 0, 0),
+                Arrays.asList(0, 1, 0, 0, 0, 0, 0, 0),
+                Arrays.asList(1, 0, 0, 0, 1, 0, 0, 1),
+                Arrays.asList(0, 0, 0, 1, 0, 1, 1, 1),
+                Arrays.asList(0, 0, 0, 0, 1, 0, 1, 0),
+                Arrays.asList(0, 0, 0, 0, 1, 1, 0, 1),
+                Arrays.asList(0, 0, 0, 1, 1, 0, 1, 0)
+        );;
+        List<List<Integer>> vTopo = Arrays.asList(
+                Arrays.asList(0, 1, 0, 1, 0, 0, 0, 0),
+                Arrays.asList(1, 0, 1, 0, 0, 0, 0, 0),
+                Arrays.asList(0, 1, 0, 0, 0, 0, 0, 0),
+                Arrays.asList(1, 0, 0, 0, 1, 0, 0, 1),
+                Arrays.asList(0, 0, 0, 1, 0, 1, 1, 1),
+                Arrays.asList(0, 0, 0, 0, 1, 0, 1, 0),
+                Arrays.asList(0, 0, 0, 0, 1, 1, 0, 1),
+                Arrays.asList(0, 0, 0, 1, 1, 0, 1, 0)
+        );;
 
         NetworkInfo netInfo = new NetworkInfo(host, port, exchangeName, virtualID, tagTranslations, pTopo, vTopo);
 
