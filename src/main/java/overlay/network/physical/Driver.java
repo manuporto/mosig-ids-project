@@ -4,6 +4,8 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -13,7 +15,7 @@ import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 class Driver {
-
+    private final Logger logger = LoggerFactory.getLogger(Driver.class);
     private String exchangeName;
     private ConnectionFactory factory;
     private Connection connection;
@@ -72,8 +74,7 @@ class Driver {
             channel.close();
             connection.close();
         } catch (IOException | TimeoutException e) {
-            e.printStackTrace();
-            System.err.println("Couldn't close porperly the channel and the connection");
+            logger.warn("Couldn't close porperly the channel and the connection: " + e.getMessage());
         }
 
     }

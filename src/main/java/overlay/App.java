@@ -3,6 +3,8 @@
  */
 package overlay;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import overlay.external.ClientListener;
 import overlay.external.ExternalMessage;
 import overlay.network.NetworkInfo;
@@ -28,16 +30,18 @@ public class App {
     }
 
     public static void main(String[] args) throws IOException, TimeoutException, InterruptedException {
+        System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "TRACE");
+        Logger logger = LoggerFactory.getLogger(App.class);
+
         int virtualID = -1;
         if (args.length == 1) {
             virtualID = Integer.parseInt(args[0]);
         }
         if (virtualID < 0) {
-            System.err.println("Incorrect number or value of arguments.");
-            System.err.println("Usage: java App <nodeID>");
+            logger.error("Incorrect number or value of arguments.\n Usage: java App <nodeID>");
             return;
         }
-        System.out.println("Running with ID: " + virtualID);
+        logger.debug("Running with virtual ID: " + virtualID);
         App app = new App();
         String host = "localhost";
         int port = 5672;
@@ -60,19 +64,20 @@ public class App {
         virtualRouterThread.start();
 
         Scanner in = new Scanner(System.in);
-        System.out.println("Enter Q for stopping the node.");
+        logger.info("Enter Q for stopping the node.");
         String quit = in.nextLine();
 
         while (!quit.equalsIgnoreCase("q")) {
-            System.out.println("Enter Q for stopping the node.");
+            logger.info("Enter Q for stopping the node.");
             quit = in.nextLine();
         }
 
+        logger.debug("Stopping node...");
         cl.stop();
         routerThread.interrupt();
         virtualRouterThread.interrupt();
         routerThread.join();
         virtualRouterThread.join();
-
+        logger.debug("Node stopped.");
     }
 }
