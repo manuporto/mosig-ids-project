@@ -1,6 +1,8 @@
 package overlay.network.physical;
 
 import com.rabbitmq.client.DeliverCallback;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import overlay.network.NetworkInfo;
 import overlay.network.virtual.Message;
 import overlay.util.BreadthFirstSearch;
@@ -14,6 +16,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeoutException;
 
 public class Router implements Runnable {
+    private final Logger logger = LoggerFactory.getLogger(Router.class);
     private NetworkInfo networkInfo;
     private final int myID;
     private Map<Integer, Integer> nextHopsForDestinations;
@@ -36,8 +39,8 @@ public class Router implements Runnable {
             ByteArrayInputStream is = new ByteArrayInputStream(delivery.getBody());
             try (ObjectInputStream ois = new ObjectInputStream(is)) {
                 Package pkg = (Package) ois.readObject();
-                System.out.println(" [x] Received '" +
-                        delivery.getEnvelope().getRoutingKey() + "':'" + pkg.getSrc() + "'");
+                logger.debug(" [x] Received '" +
+                        delivery.getEnvelope().getRoutingKey() + "':'" + pkg.getMessage().getPayload() + "'");
                 if (pkg.getDest() != myID) {
                     pkg.setNextHop(nextHopsForDestinations.get(pkg.getDest()));
                     driver.send(pkg);
@@ -66,7 +69,7 @@ public class Router implements Runnable {
             try {
                 msg = outgoingMessages.take();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.trace("Router got interrupted when trying to get a message from the outgoingMessages queue.");
                 Thread.currentThread().interrupt();
                 break;
             }
@@ -77,8 +80,7 @@ public class Router implements Runnable {
             try {
                 driver.send(pkg);
             } catch (IOException e) {
-                // TODO log error
-                e.printStackTrace();
+                logger.warn("Error when trying to send package: " + e.getMessage());
             }
         }
     }
@@ -91,7 +93,9 @@ public class Router implements Runnable {
     @Override
     public void run() {
         processMessages();
+        logger.debug("Stopping router...");
         driver.stop();
-        System.out.println("Finishing");
+        logger.debug("Router stopped.");
+
     }
 }
