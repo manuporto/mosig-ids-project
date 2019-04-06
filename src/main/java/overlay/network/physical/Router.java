@@ -39,8 +39,8 @@ public class Router implements Runnable {
             ByteArrayInputStream is = new ByteArrayInputStream(delivery.getBody());
             try (ObjectInputStream ois = new ObjectInputStream(is)) {
                 Package pkg = (Package) ois.readObject();
-                logger.debug(" [x] Received '" +
-                        delivery.getEnvelope().getRoutingKey() + "':'" + pkg.getMessage().getPayload() + "'");
+                logger.debug("Received from routingKey " +
+                        delivery.getEnvelope().getRoutingKey() + " the following package: " + pkg.toString());
                 if (pkg.getDest() != myID) {
                     pkg.setNextHop(nextHopsForDestinations.get(pkg.getDest()));
                     driver.send(pkg);
@@ -48,8 +48,7 @@ public class Router implements Runnable {
                     this.incomingMessages.put(pkg.getMessage());
                 }
             } catch (ClassNotFoundException | InterruptedException e) {
-                // TODO log error
-                e.printStackTrace();
+                logger.warn("Error when trying to deserialize package.");
             }
         };
 

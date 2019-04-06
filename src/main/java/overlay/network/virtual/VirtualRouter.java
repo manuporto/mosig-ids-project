@@ -49,8 +49,7 @@ public class VirtualRouter implements Runnable {
             try {
                 Message incomingMessage = incomingMessages.take();
                 if (incomingMessage.getDest() == myID) {
-                    logger.info("Received message from " + incomingMessage.getSrc() + " to " +
-                            incomingMessage.getDest() + " with the following message: " + incomingMessage.getPayload());
+                    logger.info("Received message: " + incomingMessage.toString());
                 } else {
                     int nextHop = nextHopsForDestinations.get(incomingMessage.getDest());
                     incomingMessage.setNextHop(nextHop);

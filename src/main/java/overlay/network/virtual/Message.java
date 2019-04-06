@@ -8,7 +8,7 @@ public class Message implements Serializable {
     private int nextHop;
     private String payload;
 
-    public Message(int src, int dest, int nextHop, String payload) {
+    Message(int src, int dest, int nextHop, String payload) {
         this.src = src;
         this.dest = dest;
         this.nextHop = nextHop;
@@ -19,7 +19,7 @@ public class Message implements Serializable {
         return nextHop;
     }
 
-    public void setNextHop(int nextHop) {
+    void setNextHop(int nextHop) {
         this.nextHop = nextHop;
     }
 
@@ -27,11 +27,21 @@ public class Message implements Serializable {
         return src;
     }
 
-    public int getDest() {
+    int getDest() {
         return dest;
     }
 
     public String getPayload() {
         return payload;
+    }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "src=" + src +
+                ", dest=" + dest +
+                ", nextHop=" + nextHop +
+                ", payload='" + payload + '\'' +
+                '}';
     }
 }
