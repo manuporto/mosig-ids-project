@@ -25,8 +25,8 @@ class Driver {
     private final String connectPrefix = "connnection";
     private final String connectSeparator = "_";
 
-    Driver(String host, int port, String exchangeName) throws IOException, TimeoutException {
-        myID = -1;
+    Driver(String host, int port, String exchangeName, int myID) throws IOException, TimeoutException {
+        this.myID = myID;
         this.exchangeName = exchangeName;
         factory = new ConnectionFactory();
         factory.setHost(host);
