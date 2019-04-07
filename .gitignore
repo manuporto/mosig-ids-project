@@ -1,5 +1,6 @@
 .gradle
 /build/
+out
 
 # Java
 bin
@@ -24,3 +25,7 @@ gradle-app.setting
 
 # VS Code
 .vscode
+
+# Python
+venv
+env

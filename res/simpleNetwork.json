@@ -1,0 +1,10 @@
+{
+  "host": "localhost",
+  "port": 5672,
+  "tags": {
+    "0": 0,
+    "1": 1
+  },
+  "physicalTopology": [[1, 1], [1, 1]],
+  "virtualTopology": [[1, 1], [1, 1]]
+}

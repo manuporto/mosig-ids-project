@@ -27,7 +27,7 @@ public class BreadthFirstSearchTest {
                 Arrays.asList(1, 0, 0, 0, 1, 0, 0, 1),
                 Arrays.asList(0, 0, 0, 1, 0, 1, 1, 1),
                 Arrays.asList(0, 0, 0, 0, 1, 0, 1, 0),
-                Arrays.asList(0, 0, 0, 0, 0, 1, 0, 1),
+                Arrays.asList(0, 0, 0, 0, 1, 1, 0, 1),
                 Arrays.asList(0, 0, 0, 1, 1, 0, 1, 0)
         );
     }

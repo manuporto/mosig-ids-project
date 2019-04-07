@@ -44,8 +44,10 @@ public class Router implements Runnable {
                 if (pkg.getDest() != myID) {
                     pkg.setNextHop(nextHopsForDestinations.get(pkg.getDest()));
                     driver.send(pkg);
+                    logger.debug("Package rerouted.");
                 } else {
                     this.incomingMessages.put(pkg.getMessage());
+                    logger.debug("Package arrived it's destination, sent to the Virtual Router");
                 }
             } catch (ClassNotFoundException | InterruptedException e) {
                 logger.warn("Error when trying to deserialize package.");
@@ -78,6 +80,7 @@ public class Router implements Runnable {
             Package pkg = new Package(pSrc, pDest, nextHop, msg);
             try {
                 driver.send(pkg);
+                logger.debug("Sent package: " + pkg.toString());
             } catch (IOException e) {
                 logger.warn("Error when trying to send package: " + e.getMessage());
             }
