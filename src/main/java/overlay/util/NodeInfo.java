@@ -1,5 +1,8 @@
 package overlay.util;
 
+/**
+ * Class that will not be kept ;p
+ */
 public class NodeInfo {
 
     private int pTag;

@@ -18,6 +18,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeoutException;
 
+/**
+ * Main class that will run the application.
+ */
 public class App {
     private BlockingQueue<ExternalMessage> externalMessages;
     private BlockingQueue<Message> incomingMessages;

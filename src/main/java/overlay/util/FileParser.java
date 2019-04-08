@@ -8,6 +8,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Map;
 
+/**
+ * Class that will parse JSON files containing the needed information about the network.
+ */
 public class FileParser {
     public static void main(String[] args) {
 

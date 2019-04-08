@@ -1,5 +1,9 @@
 package overlay.external;
 
+/**
+ * This class represents the data structure of the
+ * of the messages received externally
+ */
 public class ExternalMessage {
     private int dest;
     private String message;
