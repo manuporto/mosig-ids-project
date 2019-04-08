@@ -11,9 +11,10 @@ import overlay.network.NetworkInfo;
 import overlay.network.physical.Router;
 import overlay.network.virtual.Message;
 import overlay.network.virtual.VirtualRouter;
+import overlay.util.NetworkFileParser;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeoutException;
@@ -22,70 +23,59 @@ public class App {
     private BlockingQueue<ExternalMessage> externalMessages;
     private BlockingQueue<Message> incomingMessages;
     private BlockingQueue<Message> outgoingMessages;
+    private Router router;
+    private VirtualRouter vRouter;
+    private ClientListener cl;
+    private Thread routerThread;
+    private Thread virtualRouterThread;
 
-    private App() {
+    private App(NetworkInfo netInfo) throws IOException, TimeoutException {
         externalMessages = new LinkedBlockingQueue<>();
         incomingMessages = new LinkedBlockingQueue<>();
         outgoingMessages = new LinkedBlockingQueue<>();
+
+        router = new Router(netInfo, incomingMessages, outgoingMessages);
+        vRouter = new VirtualRouter(netInfo, externalMessages, incomingMessages, outgoingMessages);
+        cl = new ClientListener(externalMessages);
+
+        routerThread = new Thread(router);
+        virtualRouterThread = new Thread(vRouter);
     }
 
-    public static void main(String[] args) throws IOException, TimeoutException, InterruptedException {
+    private void start() {
+        cl.start();
+        routerThread.start();
+        virtualRouterThread.start();
+    }
+
+    private void stop() throws InterruptedException {
+        cl.stop();
+        routerThread.interrupt();
+        virtualRouterThread.interrupt();
+        routerThread.join();
+        virtualRouterThread.join();
+    }
+
+    public static void main(String[] args) throws IOException, InterruptedException, TimeoutException {
         System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "TRACE");
         Logger logger = LoggerFactory.getLogger(App.class);
 
-        int virtualID = -1;
-        if (args.length == 1) {
-            virtualID = Integer.parseInt(args[0]);
-        }
-        if (virtualID < 0) {
+        int virtualID;
+        if (args.length != 2) {
             logger.error("Incorrect number or value of arguments.\n Usage: java App <nodeID>");
             return;
+        } else {
+            virtualID = Integer.parseInt(args[0]);
         }
+
+        NetworkFileParser nfp = new NetworkFileParser(args[1]);
+
+        NetworkInfo netInfo = new NetworkInfo(nfp.getHost(), nfp.getPort(), "defaultExchange", virtualID,
+                nfp.getTags(), nfp.getPhysicalTopology(), nfp.getVirtualTopology());
+
+        App app = new App(netInfo);
+        app.start();
         logger.debug("Running with virtual ID: " + virtualID);
-        App app = new App();
-        String host = "localhost";
-        int port = 5672;
-        String exchangeName = "defaultExchange";
-        Map<Integer, Integer> tagTranslations = new HashMap<>();
-        tagTranslations.put(0, 0);
-        tagTranslations.put(1, 1);
-        tagTranslations.put(2, 2);
-        tagTranslations.put(3, 3);
-        tagTranslations.put(4, 4);
-        tagTranslations.put(5, 5);
-        tagTranslations.put(6, 6);
-        tagTranslations.put(7, 7);
-        List<List<Integer>> pTopo = Arrays.asList(
-                Arrays.asList(0, 1, 0, 1, 0, 0, 0, 0),
-                Arrays.asList(1, 0, 1, 0, 0, 0, 0, 0),
-                Arrays.asList(0, 1, 0, 0, 0, 0, 0, 0),
-                Arrays.asList(1, 0, 0, 0, 1, 0, 0, 1),
-                Arrays.asList(0, 0, 0, 1, 0, 1, 1, 1),
-                Arrays.asList(0, 0, 0, 0, 1, 0, 1, 0),
-                Arrays.asList(0, 0, 0, 0, 1, 1, 0, 1),
-                Arrays.asList(0, 0, 0, 1, 1, 0, 1, 0)
-        );;
-        List<List<Integer>> vTopo = Arrays.asList(
-                Arrays.asList(0, 1, 0, 1, 0, 0, 0, 0),
-                Arrays.asList(1, 0, 1, 0, 0, 0, 0, 0),
-                Arrays.asList(0, 1, 0, 0, 0, 0, 0, 0),
-                Arrays.asList(1, 0, 0, 0, 1, 0, 0, 1),
-                Arrays.asList(0, 0, 0, 1, 0, 1, 1, 1),
-                Arrays.asList(0, 0, 0, 0, 1, 0, 1, 0),
-                Arrays.asList(0, 0, 0, 0, 1, 1, 0, 1),
-                Arrays.asList(0, 0, 0, 1, 1, 0, 1, 0)
-        );;
-
-        NetworkInfo netInfo = new NetworkInfo(host, port, exchangeName, virtualID, tagTranslations, pTopo, vTopo);
-
-        Router router = new Router(netInfo, app.incomingMessages, app.outgoingMessages);
-        VirtualRouter vRouter = new VirtualRouter(netInfo, app.externalMessages, app.incomingMessages, app.outgoingMessages);
-        ClientListener cl = new ClientListener(app.externalMessages);
-        cl.start();
-        Thread routerThread = new Thread(router);
-        routerThread.start();
-        Thread virtualRouterThread = new Thread(vRouter);
-        virtualRouterThread.start();
 
         Scanner in = new Scanner(System.in);
         logger.info("Enter Q for stopping the node.");
@@ -97,11 +87,7 @@ public class App {
         }
 
         logger.debug("Stopping node...");
-        cl.stop();
-        routerThread.interrupt();
-        virtualRouterThread.interrupt();
-        routerThread.join();
-        virtualRouterThread.join();
+        app.stop();
         logger.debug("Node stopped.");
     }
 }
