@@ -13,6 +13,12 @@ import java.io.OutputStream;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
+
+/**
+ * This class is used when a message is received externally
+ * to handle the sending of the message to the right destination.
+ * It will add the message to the ExternalMessage queue.
+ */
 public class SendMessageHandler implements HttpHandler {
 
     private final Logger logger = LoggerFactory.getLogger(SendMessageHandler.class);

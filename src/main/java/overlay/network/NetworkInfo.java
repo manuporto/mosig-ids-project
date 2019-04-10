@@ -3,6 +3,9 @@ package overlay.network;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Class that contains all the required information of the network.
+ */
 public class NetworkInfo {
     private String host;
     private int port;
@@ -12,6 +15,16 @@ public class NetworkInfo {
     private List<List<Integer>> pTopology;
     private List<List<Integer>> vTopology;
 
+    /**
+     * Class constructor that gathers the info of the network .
+     * @param host is the host server name.
+     * @param port is the port number.
+     * @param exchangeName is the name of the exchange.
+     * @param virtualID is the Virtual ID.
+     * @param tagTranslations is a map of the virtual and physycal IDs.
+     * @param pTopology is the physical topology of the network.
+     * @param vTopology is the virtual topology of the network.
+     */
     public NetworkInfo(String host, int port, String exchangeName, int virtualID,
                        Map<Integer, Integer> tagTranslations, List<List<Integer>> pTopology,
                        List<List<Integer>> vTopology) {

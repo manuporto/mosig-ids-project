@@ -15,6 +15,9 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeoutException;
 
+/**
+ * Running thread that play the the role of the physical router
+ */
 public class Router implements Runnable {
     private final Logger logger = LoggerFactory.getLogger(Router.class);
     private NetworkInfo networkInfo;
@@ -25,6 +28,16 @@ public class Router implements Runnable {
     private Driver driver;
     private DeliverCallback deliverCallback;
 
+    /**
+     * Class constructor to initialize the physical router.
+     * @param networkInfo (Host,port,Tags,virtual and physical topologies)
+     * @param incomingMessages (Queue where the package will be sent to after routing.
+     *                          To be handled by the virtual router later on)
+     * @param outgoingMessages (Queue where the message will be taken from .
+     *                         coming from the virtual router)
+     * @throws IOException
+     * @throws TimeoutException
+     */
     public Router(NetworkInfo networkInfo, BlockingQueue<Message> incomingMessages,
                   BlockingQueue<Message> outgoingMessages) throws IOException, TimeoutException {
         this.networkInfo = networkInfo;
@@ -57,6 +70,10 @@ public class Router implements Runnable {
         setConnections();
     }
 
+    /**
+     * Method to send a connection request to all adjacent nodes
+     * @throws IOException
+     */
     private void setConnections() throws IOException {
         List<Integer> adjList = networkInfo.getpTopology().get(myID);
         for (int i = 0; i < adjList.size(); i++) {
@@ -64,6 +81,9 @@ public class Router implements Runnable {
         }
     }
 
+    /**
+     * Method to process the messages received from the OutgoingMessages queue
+     */
     private void processMessages() {
         while (!Thread.currentThread().isInterrupted()) {
             Message msg;
@@ -87,6 +107,11 @@ public class Router implements Runnable {
         }
     }
 
+    /**
+     * Method to establish the connection
+     * @param dest is the ID of the destination
+     * @throws IOException
+     */
     private void connect(int dest) throws IOException {
         driver.addIncomingConnection(dest, deliverCallback);
         driver.addOutgoingConnection(dest);
