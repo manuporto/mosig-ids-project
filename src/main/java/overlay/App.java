@@ -5,6 +5,7 @@ package overlay;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.impl.SimpleLogger;
 import overlay.external.ClientListener;
 import overlay.external.ExternalMessage;
 import overlay.network.NetworkInfo;
@@ -57,16 +58,21 @@ public class App {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException, TimeoutException {
-        System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "TRACE");
+        if (args.length < 3) {
+            System.err.println("Incorrect number or value of arguments.\n Usage: " +
+                    "<path to dist>/overlay/bin/overlay <nodeID> <network file path> " +
+                    "<log level in caps (TRACE, DEBUG, INFO, WARN, ERROR)> <log file path (optional)>");
+            return;
+        }
+        int virtualID = Integer.parseInt(args[0]);
+        System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, args[2]);
+
+        if (args.length == 4) {
+            System.setProperty(SimpleLogger.LOG_FILE_KEY, args[3]);
+        }
+
         Logger logger = LoggerFactory.getLogger(App.class);
 
-        int virtualID;
-        if (args.length != 2) {
-            logger.error("Incorrect number or value of arguments.\n Usage: java App <nodeID>");
-            return;
-        } else {
-            virtualID = Integer.parseInt(args[0]);
-        }
 
         NetworkFileParser nfp = new NetworkFileParser(args[1]);
 
