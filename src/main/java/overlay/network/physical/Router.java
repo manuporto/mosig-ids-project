@@ -44,7 +44,7 @@ public class Router implements Runnable {
                 if (pkg.getDest() != myID) {
                     pkg.setNextHop(nextHopsForDestinations.get(pkg.getDest()));
                     driver.send(pkg);
-                    logger.debug("Package rerouted.");
+                    logger.debug("Package rerouted: " + pkg.toString());
                 } else {
                     this.incomingMessages.put(pkg.getMessage());
                     logger.debug("Package arrived it's destination, sent to the Virtual Router");
