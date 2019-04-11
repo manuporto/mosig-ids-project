@@ -37,5 +37,7 @@ An example payload coulde be:
 }
 ```
 
+The endpoint which listens for new messages is `/sendmsg`.
+
 ### Other commands
 * For generating javadocs: `./gradlew javadocs`
