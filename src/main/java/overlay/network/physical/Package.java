@@ -16,8 +16,8 @@ public class Package implements Serializable {
 
     /**
      * Class constructor to initialize the package.
-     * @param src is the source ID.
-     * @param dest is the destination ID.
+     * @param src is the physical source ID.
+     * @param dest is the physical destination ID.
      * @param nextHop is ID of the next hop.
      * @param message is the actual message.
      */

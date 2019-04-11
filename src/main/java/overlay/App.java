@@ -46,11 +46,20 @@ public class App {
         virtualRouterThread = new Thread(vRouter);
     }
 
+    /**
+     * Method that will start the system.
+     */
+
     private void start() {
         cl.start();
         routerThread.start();
         virtualRouterThread.start();
     }
+
+    /**
+     * Method that will stop the system.
+     * @throws InterruptedException
+     */
 
     private void stop() throws InterruptedException {
         cl.stop();

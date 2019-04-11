@@ -11,6 +11,10 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * Testing class for BreadthFirstSearch class.
+ */
+
 @RunWith(Parameterized.class)
 public class BreadthFirstSearchTest {
     private List<List<Integer>> adj;

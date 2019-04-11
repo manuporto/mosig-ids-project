@@ -15,6 +15,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This class Is a File Parser to get the network information from Json files
+ */
+
 public class NetworkFileParser {
     private final Logger logger = LoggerFactory.getLogger(NetworkFileParser.class);
     private String host;
@@ -23,6 +27,11 @@ public class NetworkFileParser {
     private List<List<Integer>> physicalTopology;
     private List<List<Integer>> virtualTopology;
 
+    /**
+     * Class constructor to Parse the file
+     * @param path is the location of the file to be parsed
+     * @throws IOException
+     */
     public NetworkFileParser(String path) throws IOException {
         Path file = Paths.get(path);
         try(InputStream is = Files.newInputStream(file)) {

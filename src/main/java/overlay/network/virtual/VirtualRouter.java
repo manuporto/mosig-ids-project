@@ -9,6 +9,11 @@ import overlay.util.BreadthFirstSearch;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
+/**
+ * Class for the Virtual router that will communicate with the router through 2 queues;
+ * incoming messages queue and outgoing messages queue.
+ */
+
 public class VirtualRouter implements Runnable {
     private final Logger logger = LoggerFactory.getLogger(VirtualRouter.class);
     private NetworkInfo networkInfo;
@@ -18,6 +23,13 @@ public class VirtualRouter implements Runnable {
     private BlockingQueue<Message> incomingMessages;
     private BlockingQueue<Message> outgoingMessages;
 
+    /**
+     * Class constructor to initialize the virtual router.
+     * @param networkInfo includes the information of the network.
+     * @param externalMessages is the external message queue.
+     * @param incomingMessages is the queue of messages coming from the router.
+     * @param outgoingMessages is the queue of messages going to the router.
+     */
     public VirtualRouter(NetworkInfo networkInfo, BlockingQueue<ExternalMessage> externalMessages,
                          BlockingQueue<Message> incomingMessages,
                          BlockingQueue<Message> outgoingMessages) {
@@ -28,6 +40,10 @@ public class VirtualRouter implements Runnable {
         this.incomingMessages = incomingMessages;
         this.outgoingMessages = outgoingMessages;
     }
+
+    /**
+     * Running thread that will listen to external messages.
+     */
 
     private void listenForExternalMessages() {
         while(!Thread.currentThread().isInterrupted()) {
@@ -45,6 +61,10 @@ public class VirtualRouter implements Runnable {
         }
     }
 
+    /**
+     * Running thread that will listen for Incoming messages.
+     */
+    
     private void listenForIncomingMessages() {
         while (!Thread.currentThread().isInterrupted()) {
             try {
