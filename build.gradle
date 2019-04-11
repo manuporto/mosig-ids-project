@@ -27,6 +27,8 @@ dependencies {
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.8'
     testImplementation 'junit:junit:4.12'
 }
-
+javadoc {
+	options.addBooleanOption('html5',true)
+}
 // Define the main class for the application
 mainClassName = 'overlay.App'

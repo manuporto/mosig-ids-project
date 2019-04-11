@@ -11,6 +11,10 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * Testing class for NetworkFileParser.
+ */
+
 public class NetworkFileParserTest {
 
     @Test
