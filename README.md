@@ -16,3 +16,7 @@
 3. Run `./overlay/bin/overlay <virtual ID> <path to network file> <log level> <log file (optional)>`
 
 Note: The last operation must be done as many times as nodes are in the network file (changing the virtual ID). If not, the network will not have all the required nodes running and it will not function properly.
+
+
+### Other commands
+* For generating javadocs: `./gradlew javadocs`
